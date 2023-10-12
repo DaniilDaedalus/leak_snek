@@ -1,6 +1,10 @@
 lint:
-	ruff .
 	mypy .
+	ruff check .
 
 format:
-	ruff --fix .
+	ruff check --fix-only .
+	black .
+
+test:
+	pytest --cov=leak_snek
