@@ -64,8 +64,16 @@ def rl(rate_limit: str) -> RateLimit:  # noqa: D417 - false positive missing arg
         msg = "Unexpected end of rate limit string."
         raise ValueError(msg)
 
+    dot_count = 0
+
     while character := buffer.read(1):
-        if character.isnumeric() or character == ".":
+        if character == "." and period and dot_count < 1:
+            dot_count += 1
+
+            period += character
+            continue
+
+        if character.isnumeric():
             period += character
             continue
 

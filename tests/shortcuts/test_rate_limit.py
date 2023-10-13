@@ -34,6 +34,8 @@ def test_rl(rate_limit: str, expected: RateLimit) -> None:
         ("1/", "Unexpected end of rate limit string."),
         ("1m", "Unknown character at position"),
         ("1/y", "Unknown character at position"),
+        ("1/1.2.3h", "Unknown character at position"),
+        ("1//", "Unknown character at position"),
     ],
 )
 def test_rl_fail(rate_limit: str, message_regex: str) -> None:
