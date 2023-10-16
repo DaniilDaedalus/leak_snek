@@ -1,4 +1,6 @@
 """Module containing rate model."""
+from __future__ import annotations
+
 import dataclasses
 import time
 from typing import Self, final

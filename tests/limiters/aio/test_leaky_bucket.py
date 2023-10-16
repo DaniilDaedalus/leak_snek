@@ -2,9 +2,10 @@
 import time
 from datetime import timedelta
 
-from leak_snek.interfaces.storages.rate import Rate
+from leak_snek.interfaces.values.rate import Rate
 from leak_snek.interfaces.values.rate_limit import RateLimit
 from leak_snek.limiters.aio.leaky_bucket import AsyncLeakyBucketLimiter
+from tests.fakes.aio.mutex import FakeAsyncMutex
 from tests.fakes.aio.storage import FakeAsyncStorage
 
 
@@ -15,6 +16,7 @@ async def test_leaky_bucket() -> None:
     limiter: AsyncLeakyBucketLimiter[str] = AsyncLeakyBucketLimiter(
         rate_limit=RateLimit(operations=1, period=timedelta(minutes=1)),
         rate_storage=FakeAsyncStorage(),
+        key_mutex=FakeAsyncMutex(),
     )
 
     # When: limit exceeded is called two times consecutively
@@ -32,6 +34,7 @@ async def test_leaky_bucket_leak() -> None:
     limiter: AsyncLeakyBucketLimiter[str] = AsyncLeakyBucketLimiter(
         rate_limit=RateLimit(operations=2, period=timedelta(minutes=1)),
         rate_storage=storage,
+        key_mutex=FakeAsyncMutex(),
     )
 
     await storage.write(key, Rate(operations=2, updated_at=time.monotonic() - 30))

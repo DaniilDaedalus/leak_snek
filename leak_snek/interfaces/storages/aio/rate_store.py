@@ -1,7 +1,7 @@
 """Module containing async rate storage interface."""
 from typing import Protocol, Self, TypeVar
 
-from leak_snek.interfaces.storages.rate import Rate
+from leak_snek.interfaces.values.rate import Rate
 
 T_contra = TypeVar("T_contra", contravariant=True)
 

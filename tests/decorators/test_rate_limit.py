@@ -1,11 +1,12 @@
 """Test rate limit decorator."""
 import dataclasses
-from typing import Self
+from typing import Self, final
 
 from leak_snek.decorators.rate_limit import rate_limit
 from tests.fakes.limiter import FakeRateLimiter
 
 
+@final
 @dataclasses.dataclass
 class FakeFunction:
     """Fake function implementation recording calls to itself."""

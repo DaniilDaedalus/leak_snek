@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "leak-snek"
-version = "0.0.1"
+version = "0.1.0"
 description = ""
 authors = ["Daniil Fedyaev <wintercitizen@outlook.com>"]
 readme = "README.md"

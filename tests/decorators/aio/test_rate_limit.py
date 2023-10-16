@@ -1,12 +1,13 @@
 """Test async rate limit decorator."""
 import dataclasses
 from collections.abc import Awaitable
-from typing import Self
+from typing import Self, final
 
 from leak_snek.decorators.aio.rate_limit import async_rate_limit
 from tests.fakes.aio.limiter import FakeAsyncRateLimiter
 
 
+@final
 @dataclasses.dataclass
 class FakeAsyncFunction:
     """Fake async function implementation recording calls to itself."""

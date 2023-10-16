@@ -1,7 +1,7 @@
 """Test memory storage."""
 from time import monotonic
 
-from leak_snek.interfaces.storages.rate import Rate
+from leak_snek.interfaces.values.rate import Rate
 from leak_snek.storages.memory_storage import MemoryStorage
 
 

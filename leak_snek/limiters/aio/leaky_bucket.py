@@ -4,8 +4,9 @@ import time
 from typing import Self, TypeVar, final, override
 
 from leak_snek.interfaces.limiters.aio.rate_limiter import AsyncRateLimiter
+from leak_snek.interfaces.mutexes.aio.mutex import AsyncMutex
 from leak_snek.interfaces.storages.aio.rate_store import AsyncRateStorage
-from leak_snek.interfaces.storages.rate import Rate
+from leak_snek.interfaces.values.rate import Rate
 from leak_snek.interfaces.values.rate_limit import RateLimit
 
 T_contra = TypeVar("T_contra", contravariant=True)
@@ -23,20 +24,22 @@ class AsyncLeakyBucketLimiter(AsyncRateLimiter[T_contra]):
 
     rate_limit: RateLimit
     rate_storage: AsyncRateStorage[T_contra]
+    key_mutex: AsyncMutex[T_contra]
 
     @override
     async def limit_exceeded(self: Self, key: T_contra) -> bool:
-        rate = await self.rate_storage.read(key)
+        async with self.key_mutex.lock(key):
+            rate = await self.rate_storage.read(key)
 
-        now = time.monotonic()
+            now = time.monotonic()
 
-        leaked = int((now - rate.updated_at) / self.rate_limit.period.seconds * self.rate_limit.operations)
+            leaked = int((now - rate.updated_at) / self.rate_limit.period.seconds * self.rate_limit.operations)
 
-        new_operations = rate.operations + 1 - leaked
+            new_operations = rate.operations + 1 - leaked
 
-        if new_operations > self.rate_limit.operations:
-            return True
+            if new_operations > self.rate_limit.operations:
+                return True
 
-        await self.rate_storage.write(key=key, value=Rate(operations=max(new_operations, 0), updated_at=now))
+            await self.rate_storage.write(key=key, value=Rate(operations=max(new_operations, 0), updated_at=now))
 
-        return False
+            return False
