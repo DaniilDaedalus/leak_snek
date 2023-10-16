@@ -19,16 +19,18 @@ class FakeLock(AbstractContextManager[Any]):
     locked: bool = False
 
     @override
-    def __enter__(self: Self) -> None:
+    def __enter__(self: Self) -> bool:
         """Set lock state to locked."""
         self.locked = True
+
+        return True
 
     @override
     def __exit__(
         self: Self,
-        exc_type: type[BaseException] | None = None,
-        exc_val: BaseException | None = None,
-        tb: TracebackType | None = None,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        tb: TracebackType | None,
     ) -> None:
         """Set lock state to unlocked."""
         self.locked = False

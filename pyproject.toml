@@ -1,9 +1,17 @@
 [tool.poetry]
 name = "leak-snek"
-version = "0.1.0"
-description = ""
+version = "0.2.0"
+description = "Leak Snek is a Python library that provides a flexible and extensible implementation of rate limiting for your applications"
 authors = ["Daniil Fedyaev <wintercitizen@outlook.com>"]
 readme = "README.md"
+license = "MIT"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+repository = "https://github.com/WinterCitizen/leak_snek"
+keywords = ["rate", "limit", "typed", "rate_limit", "leaky_buket"]
 packages = [{include = "leak_snek"}]
 
 [tool.poetry.dependencies]

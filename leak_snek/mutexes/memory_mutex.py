@@ -3,30 +3,14 @@ from __future__ import annotations
 
 import dataclasses
 from collections.abc import Callable, Generator, Hashable
-from contextlib import contextmanager
-from typing import TYPE_CHECKING, Generic, Protocol, Self, TypeVar, final, override
+from contextlib import AbstractContextManager, contextmanager
+from typing import Any, Generic, Protocol, Self, TypeVar, final, override
 
 from leak_snek.interfaces.mutexes.mutex import Mutex
 
-if TYPE_CHECKING:
-    from types import TracebackType
 
-
-class LockInterface(Protocol):
+class LockInterface(AbstractContextManager[Any], Protocol):
     """Interface representing any kind of lock supporting context manager interface."""
-
-    def __enter__(self: Self) -> None:
-        """Acquire the lock."""
-        raise NotImplementedError
-
-    def __exit__(
-        self: Self,
-        exc_type: type[BaseException] | None = None,
-        exc_val: BaseException | None = None,
-        tb: TracebackType | None = None,
-    ) -> None:
-        """Release the lock."""
-        raise NotImplementedError
 
 
 T_contra = TypeVar("T_contra", contravariant=True, bound=Hashable)
