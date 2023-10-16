@@ -6,7 +6,6 @@ Leak Snek is a Python library that provides a flexible and extensible implementa
 
 - [Features](#features)
 - [Getting Started](#getting-started)
-- [Usage](#usage)
 - [License](#license)
 
 ## Features
