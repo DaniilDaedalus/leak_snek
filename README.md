@@ -1,6 +1,7 @@
 # Leak Snek Rate Limiting
 
 ![leak snek logo](assets/logo.png)
+[![coverage](https://codecov.io/gh/WinterCitizen/leak_snek/graph/badge.svg?token=HJ98830KGG)](https://codecov.io/gh/WinterCitizen/leak_snek)
 
 Leak Snek is a Python library that provides a flexible and extensible implementation of rate limiting for your applications
 
