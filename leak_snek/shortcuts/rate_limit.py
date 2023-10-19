@@ -4,13 +4,6 @@ from io import StringIO
 
 from leak_snek.interfaces.values.rate_limit import RateLimit
 
-_period_unit_lookup = {
-    "s": timedelta(seconds=1),
-    "m": timedelta(minutes=1),
-    "h": timedelta(hours=1),
-    "d": timedelta(days=1),
-}
-
 
 def rl(rate_limit: str) -> RateLimit:  # noqa: D417 - false positive missing argument description
     """Parse a rate limit string and convert it into a RateLimit object.
@@ -44,6 +37,13 @@ def rl(rate_limit: str) -> RateLimit:  # noqa: D417 - false positive missing arg
         >>> rl(100/1.5h)
         RateLimit(operations=100, period=datetime.timedelta(seconds=5400))
     """
+    period_unit_lookup = {
+        "s": timedelta(seconds=1),
+        "m": timedelta(minutes=1),
+        "h": timedelta(hours=1),
+        "d": timedelta(days=1),
+    }
+
     operations = ""
     period = ""
     period_unit = timedelta()
@@ -54,7 +54,7 @@ def rl(rate_limit: str) -> RateLimit:  # noqa: D417 - false positive missing arg
         if character == "/":
             break
 
-        if not character.isnumeric():
+        if not character.isdigit():
             offset = buffer.tell() - 1
             msg = f"\n    {rate_limit} - Unknown character at position {offset}\n    {' ' * offset}^"
             raise ValueError(msg)
@@ -73,12 +73,12 @@ def rl(rate_limit: str) -> RateLimit:  # noqa: D417 - false positive missing arg
             period += character
             continue
 
-        if character.isnumeric():
+        if character.isdigit():
             period += character
             continue
 
-        if character in _period_unit_lookup:
-            period_unit = _period_unit_lookup[character]
+        if character in period_unit_lookup:
+            period_unit = period_unit_lookup[character]
             break
 
         offset = buffer.tell() - 1
