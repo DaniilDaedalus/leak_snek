@@ -1,5 +1,7 @@
 # Leak Snek Rate Limiting
 
+![leak snek logo](assets/logo.png)
+
 Leak Snek is a Python library that provides a flexible and extensible implementation of rate limiting for your applications
 
 ## Table of Contents
