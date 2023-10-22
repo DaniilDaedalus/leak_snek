@@ -1,6 +1,7 @@
 lint:
 	mypy .
 	ruff check .
+	black --check .
 
 format:
 	ruff check --fix-only .

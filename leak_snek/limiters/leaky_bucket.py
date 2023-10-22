@@ -15,11 +15,26 @@ T_contra = TypeVar("T_contra", contravariant=True)
 @final
 @dataclasses.dataclass
 class LeakyBucketLimiter(RateLimiter[T_contra]):
-    """Leaky bucket rate limiting algorithm.
+    """A rate limiter implementing the leaky bucket algorithm.
 
-    Manages incoming requests using a 'bucket' with capacity and leak rate.
-    Requests are added if space is available, otherwise, they're discarded or delayed.
-    The bucket gradually empties to maintain a controlled output rate, preventing congestion and DDoS attacks.
+    The leaky bucket algorithm views traffic as water entering a bucket with a hole.
+    The bucket has a specific capacity, and water (or requests) can only flow into the bucket at a certain rate.
+    Once the bucket is full, any further incoming water overflows and is discarded.
+    The hole (or "leak") at the bottom lets the water out at a constant rate.
+
+    This metaphorical bucket is used to control the rate at which requests are processed.
+    If the bucket overflows, it indicates that too many requests are coming in too fast,
+    and some of them need to be discarded or delayed.
+
+    Attributes
+    ----------
+        rate_limit (RateLimit): The limit configuration detailing how many operations are allowed in a given period.
+        rate_storage (RateStorage[T_contra]): Storage mechanism to keep track of rate values.
+        key_mutex (Mutex[T_contra]): Mutex to ensure thread-safety for the limiter.
+
+    Methods
+    -------
+        limit_exceeded: Checks if the rate limit is exceeded for a given key.
     """
 
     rate_limit: RateLimit
@@ -28,6 +43,19 @@ class LeakyBucketLimiter(RateLimiter[T_contra]):
 
     @override
     def limit_exceeded(self: Self, key: T_contra) -> bool:
+        """Check if the rate limit is exceeded for a given key.
+
+        This method uses the leaky bucket algorithm to determine if a request
+        for the given key should be allowed or rejected.
+
+        Args:
+        ----
+        key (T_contra): The key to check the rate limit for.
+
+        Returns:
+        -------
+        bool: True if the rate limit is exceeded, otherwise False.
+        """
         with self.key_mutex.lock(key):
             rate = self.rate_storage.read(key)
 

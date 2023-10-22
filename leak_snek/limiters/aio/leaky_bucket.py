@@ -15,11 +15,27 @@ T_contra = TypeVar("T_contra", contravariant=True)
 @final
 @dataclasses.dataclass
 class AsyncLeakyBucketLimiter(AsyncRateLimiter[T_contra]):
-    """Async leaky bucket rate limiting algorithm.
+    """Asynchronous rate limiter implementing the leaky bucket algorithm.
 
-    Manages incoming requests using a 'bucket' with capacity and leak rate.
-    Requests are added if space is available, otherwise, they're discarded or delayed.
-    The bucket gradually empties to maintain a controlled output rate, preventing congestion and DDoS attacks.
+    The leaky bucket algorithm metaphorically visualizes traffic as water entering a bucket with a hole.
+    The bucket has a specific capacity, and requests (water) can flow into the bucket at a predetermined rate.
+    Once the bucket reaches its capacity, any further incoming requests overflow and are discarded.
+    The hole (or "leak") at the bottom allows requests to flow out at a constant rate.
+
+    This limiter is asynchronous, making it suitable for event-driven applications
+    or environments where concurrency is important.
+    If the bucket overflows, it indicates that too many requests are arriving too quickly,
+    leading to the rejection or delay of some requests.
+
+    Attributes
+    ----------
+        rate_limit (RateLimit): The configuration specifying how many operations are allowed within a given period.
+        rate_storage (AsyncRateStorage[T_contra]): Asynchronous storage mechanism to monitor rate values.
+        key_mutex (AsyncMutex[T_contra]): Asynchronous mutex to ensure thread-safety for the limiter.
+
+    Methods
+    -------
+        limit_exceeded: Asynchronously checks if the rate limit is exceeded for a specific key.
     """
 
     rate_limit: RateLimit
@@ -28,6 +44,19 @@ class AsyncLeakyBucketLimiter(AsyncRateLimiter[T_contra]):
 
     @override
     async def limit_exceeded(self: Self, key: T_contra) -> bool:
+        """Asynchronously checks if the rate limit is exceeded for a given key.
+
+        Using the leaky bucket algorithm, this method determines whether a request
+        associated with the given key should be permitted or declined.
+
+        Args:
+        ----
+        key (T_contra): The key for which the rate limit is checked.
+
+        Returns:
+        -------
+        bool: True if the rate limit is surpassed, otherwise False.
+        """
         async with self.key_mutex.lock(key):
             rate = await self.rate_storage.read(key)
 

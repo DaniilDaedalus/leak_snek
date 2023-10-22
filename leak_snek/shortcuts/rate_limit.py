@@ -5,7 +5,7 @@ from io import StringIO
 from leak_snek.interfaces.values.rate_limit import RateLimit
 
 
-def rl(rate_limit: str) -> RateLimit:  # noqa: D417 - false positive missing argument description
+def rl(rate_limit: str) -> RateLimit:
     """Parse a rate limit string and convert it into a RateLimit object.
 
     This function takes a rate limit string in the format "<operations>/[<period>]<unit>", where
@@ -15,27 +15,27 @@ def rl(rate_limit: str) -> RateLimit:  # noqa: D417 - false positive missing arg
 
     Args:
     ----
-        rate_limit: The rate limit string to be parsed.
+    rate_limit: The rate limit string to be parsed.
 
     Returns:
     -------
-        RateLimit: A RateLimit object containing the parsed rate limit values.
+    RateLimit: A RateLimit object containing the parsed rate limit values.
 
     Raises:
     ------
-        ValueError: If the rate limit string is not in the expected format or contains
-                    invalid characters.
+    ValueError: If the rate limit string is not in the expected format or contains
+                invalid characters.
 
     Example:
     -------
-        >>> rl("100/m")
-        RateLimit(operations=100, period=datetime.timedelta(seconds=60))
+    >>> rl("100/m")
+    RateLimit(operations=100, period=datetime.timedelta(seconds=60))
 
-        >>> rl(100/5m)
-        RateLimit(operations=100, period=datetime.timedelta(seconds=300))
+    >>> rl(100/5m)
+    RateLimit(operations=100, period=datetime.timedelta(seconds=300))
 
-        >>> rl(100/1.5h)
-        RateLimit(operations=100, period=datetime.timedelta(seconds=5400))
+    >>> rl(100/1.5h)
+    RateLimit(operations=100, period=datetime.timedelta(seconds=5400))
     """
     period_unit_lookup = {
         "s": timedelta(seconds=1),
