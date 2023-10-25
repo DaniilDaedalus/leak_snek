@@ -22,4 +22,4 @@ test-ci: coverage.json
 
 badges-ci: coverage.json
 	mkdir -p badges && \
-  poetry run python -m pybadges --left-text=coverage --right-text=$(jq -j .totals.percent_covered_display coverage.json)% --right-color='#4dc71f' > badges/coverage.svg
+  poetry run python -m pybadges --left-text=coverage --right-text=$$(jq -j .totals.percent_covered_display coverage.json)% --right-color='#4dc71f' > badges/coverage.svg
