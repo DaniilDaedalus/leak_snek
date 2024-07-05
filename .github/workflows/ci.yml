@@ -31,16 +31,3 @@ jobs:
 
       - name: Run tests
         run: make test-ci
-
-      - if: github.ref == 'refs/heads/master'
-        name: Upload coverage badge
-        run: |
-          mkdir ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_ed25519
-          echo "${{ secrets.SSH_KEY_PUB }}" > ~/.ssh/id_ed25519.pub
-          chmod 400 ~/.ssh/id_ed25519 ~/.ssh/id_ed25519.pub
-
-          make badges-ci
-
-          ssh-keyscan -H 139.59.215.140 >> ~/.ssh/known_hosts
-          scp ./badges/coverage.svg root@139.59.215.140:/var/www/html/
