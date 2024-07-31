@@ -18,7 +18,9 @@ T_contra = TypeVar("T_contra", contravariant=True)
 class FixedWindowLimiter(RateLimiter[T_contra]):
     """A rate limiter implementing the fixed window algorithm.
 
-    The fixed window algorithm
+    The fixed window algorithm starts a time window when it is first called, and will only allow a limited number of
+    operations to occur within that period. Once that limit is exceeded, all further calls will be dropped until the
+    period expires and a new window is started with a reset operations counter.
 
     Attributes
     ----------
