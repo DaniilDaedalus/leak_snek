@@ -8,7 +8,7 @@ format:
 	black .
 
 test:
-	pytest --cov=leak_snek --cov-report=term-missing
+	poetry run pytest --cov=leak_snek --cov-report=term-missing
 
 lint-ci:
 	poetry run mypy .
